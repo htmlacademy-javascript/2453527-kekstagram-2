@@ -1,6 +1,11 @@
 const getStringLength = (string = '', maxLength = 1) => string.length <= maxLength;
 
-// getStringLength();
+getStringLength();
+
+// console.log(getStringLength('проверяемая строка', 20)); // true
+// console.log(getStringLength('проверяемая строка', 18)); // true
+// console.log(getStringLength('проверяемая строка', 10)); // false
+
 
 const isPalindrome = (phrase = '') => {
   phrase = phrase.toLowerCase().replaceAll(' ','');
@@ -11,7 +16,12 @@ const isPalindrome = (phrase = '') => {
   return phrase === newPhrase;
 };
 
-// isPalindrome();
+isPalindrome();
+
+// console.log(isPalindrome('топот')); // true
+// console.log(isPalindrome('ДовОд')); // true
+// console.log(isPalindrome('Кекс')); // false
+
 
 const getNumber = (string) => {
   string = typeof(string) === 'number' ? String(string) : string;
@@ -28,11 +38,13 @@ const getNumber = (string) => {
   return Number.isNaN(number) ? typeof(number) : +number;
 };
 
-// console.log(getNumber('2023 год'));
-// console.log(getNumber('ECMAScript 2022'));
-// console.log(getNumber('1 кефир, 0.5 батона'));
-// console.log(getNumber('агент 007'));
-// console.log(getNumber('а я томат'));
-// console.log(getNumber(2023));
-// console.log(getNumber(-1));
-// console.log(getNumber(1.5));
+getNumber('2023 год');
+
+// console.log(getNumber('2023 год'));  // 2023
+// console.log(getNumber('ECMAScript 2022'));  // 2022
+// console.log(getNumber('1 кефир, 0.5 батона'));  // 105
+// console.log(getNumber('агент 007'));  // 7
+// console.log(getNumber('а я томат'));  // NaN
+// console.log(getNumber(2023));  // 2023
+// console.log(getNumber(-1));  // 1
+// console.log(getNumber(1.5));  // 15
