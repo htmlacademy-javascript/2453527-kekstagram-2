@@ -21,24 +21,23 @@ const SIMILAR_POST_COUNT = 25;
 // Рандомайзер для чисел в диапазоне
 const getRandomNumberRange = (min = 0, max = 10, stepAfterDot = 0) => {
   if ((min < 0) || (max < 0) || (max === min)) {
-    return 'Диапозон должен быть положительным и состоять минимум из 1 цифры';
+    window.console.warn('Диапозон должен быть положительным и состоять минимум из 1 цифры');
+    return 0;
   } else if (stepAfterDot) {
-    return min < max ? (Math.round((Math.random() * (max - min) + min) * 10 ** stepAfterDot)) / (10 ** stepAfterDot) : (Math.round((Math.random() * (min - max) + max) * 10 ** stepAfterDot)) / (10 ** stepAfterDot);
+    const a = (Math.round((Math.random() * (max - min) + min) * 10 ** stepAfterDot)) / (10 ** stepAfterDot);
+    const b = (Math.round((Math.random() * (min - max) + max) * 10 ** stepAfterDot)) / (10 ** stepAfterDot);
+    return min < max ? a : b;
   }
   return Math.round(Math.random() * (max - min) + min);
 };
-const getRandomArrayElemet = (elements) => elements[getRandomNumberRange(0, elements.length - 1)];
+const getRandomArrayElement = (elements) => elements[getRandomNumberRange(0, elements.length - 1)];
 
 // Функции (замыкание) для создания идентификаторов
 const makeCounter = function () {
-  let privateCounter = 0;
-  function changeBy(val) {
-    privateCounter += val;
-  }
+  let value = 0;
   return {
     increment: function () {
-      changeBy(1);
-      return privateCounter;
+      return ++value;
     },
   };
 };
@@ -64,8 +63,8 @@ const commentId = getCommentId();
 const createComment = () => ({
   id: commentId(),
   avatar: `img/avatar-${getRandomNumberRange(1,6)}.svg`,
-  message: getRandomArrayElemet(COMMENTS_MESSAGE),
-  name: getRandomArrayElemet(COMMENTS_NAME),
+  message: getRandomArrayElement(COMMENTS_MESSAGE),
+  name: getRandomArrayElement(COMMENTS_NAME),
 });
 
 // Конструктор для создания постов
