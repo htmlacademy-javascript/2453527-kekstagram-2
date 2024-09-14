@@ -24,4 +24,4 @@ const createPost = () => ({
   similarComments: Array.from({length: getRandomNumberRange(0, 30)}, createComment),
 });
 
-export {createPost, }
+export {createPost};
