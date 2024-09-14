@@ -1,4 +1,4 @@
-import {createPost} from './create-post';
+import {createPost} from './mocks';
 
 const SIMILAR_POST_COUNT = 25;
 
