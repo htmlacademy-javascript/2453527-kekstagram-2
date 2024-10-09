@@ -19,6 +19,8 @@ const COMMENTS_NAME = [
   'Вашингтон',
 ];
 
+const SIMILAR_POST_COUNT = 25;
+
 // Замыкание для идентификаторая комментатора, любое без повторения
 const getCommentId = () => {
   const commentIdArr = [];
@@ -62,7 +64,9 @@ const createPost = () => ({
   url: `photos/${counterPostUrl.increment()}.jpg`,
   description: 'some description',
   likes: getRandomNumberRange(15, 200),
-  similarComments: Array.from({length: getRandomNumberRange(0, 30)}, createComment),
+  comments: Array.from({length: getRandomNumberRange(0, 30)}, createComment),
 });
 
-export {createPost};
+const createPosts = () => Array.from({length: SIMILAR_POST_COUNT}, createPost);
+
+export {createPosts};
