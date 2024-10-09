@@ -64,7 +64,7 @@ const createPost = () => ({
   url: `photos/${counterPostUrl.increment()}.jpg`,
   description: 'some description',
   likes: getRandomNumberRange(15, 200),
-  similarComments: Array.from({length: getRandomNumberRange(0, 30)}, createComment),
+  comments: Array.from({length: getRandomNumberRange(0, 30)}, createComment),
 });
 
 const createPosts = () => Array.from({length: SIMILAR_POST_COUNT}, createPost);
