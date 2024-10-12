@@ -1,4 +1,4 @@
-import {getRandomNumberRange, getRandomArrayElement} from './utils';
+import {getRandomNumberRange, getRandomArrayElement} from './utils.js';
 
 const COMMENTS_MESSAGE = [
   'Всё отлично!',
@@ -62,7 +62,7 @@ const createPost = () => ({
   url: `photos/${counterPostUrl.increment()}.jpg`,
   description: 'some description',
   likes: getRandomNumberRange(15, 200),
-  similarComments: Array.from({length: getRandomNumberRange(0, 30)}, createComment),
+  comments: Array.from({length: getRandomNumberRange(0, 30)}, createComment),
 });
 
 export {createPost};

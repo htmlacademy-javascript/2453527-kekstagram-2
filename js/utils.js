@@ -12,4 +12,25 @@ const getRandomNumberRange = (min = 0, max = 10, stepAfterDot = 0) => {
 };
 const getRandomArrayElement = (elements) => elements[getRandomNumberRange(0, elements.length - 1)];
 
-export {getRandomNumberRange, getRandomArrayElement};
+// Функци для получения шаблона
+const findTemplate = (id) => {
+  const template = document.querySelector(`#${id}`);
+  if (!template) {
+    throw new Error(`Template not found: ${id}`);
+  }
+  if (!(template instanceof HTMLTemplateElement)) {
+    throw new Error(`Template id not a template: ${id}`);
+  }
+  return template.content.firstElementChild;
+};
+
+// Функци для отрисовки шаблона
+const renderPack = (items, makeElement, container) => {
+  const fragment = document.createDocumentFragment();
+  items.forEach((item) => {
+    fragment.appendChild(makeElement(item));
+  });
+  container.appendChild(fragment);
+};
+
+export {getRandomNumberRange, getRandomArrayElement, findTemplate, renderPack};
