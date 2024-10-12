@@ -1,4 +1,4 @@
-import {findTemplate} from './utils';
+import {findTemplate} from './utils.js';
 
 const pictureList = document.querySelector('.pictures');
 const pictureTemplate = findTemplate('picture');

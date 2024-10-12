@@ -1,4 +1,4 @@
-import {getRandomNumberRange, getRandomArrayElement} from './utils';
+import {getRandomNumberRange, getRandomArrayElement} from './utils.js';
 
 const COMMENTS_MESSAGE = [
   'Всё отлично!',
