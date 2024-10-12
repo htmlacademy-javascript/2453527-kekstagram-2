@@ -1,16 +1,12 @@
-import {createPosts} from './mocks';
+import {findTemplate} from './utils';
 
 const pictureList = document.querySelector('.pictures');
-const pictureTemplate = document.querySelector('#picture')
-  .content
-  .querySelector('.picture');
+const pictureTemplate = findTemplate('picture');
 
-const pictureElements = createPosts();
 const pictureListFragment = document.createDocumentFragment();
 
-// Создаем объект и меняем данные внутри, складываем все в один элемент
-
-pictureElements.forEach(({url, description, likes, comments}) => {
+// Функция, создающая картинку
+const getPictureElement = ({url, description, likes, comments}) => {
   const pictureElement = pictureTemplate.cloneNode(true);
   pictureElement.querySelector('.picture__img')
     .setAttribute('src', url);
@@ -21,8 +17,8 @@ pictureElements.forEach(({url, description, likes, comments}) => {
   pictureElement.querySelector('.picture__likes')
     .textContent = likes;
   pictureListFragment.appendChild(pictureElement);
-});
 
-// Добавление элемента на страницу
+  return pictureElement;
+};
 
-pictureList.appendChild(pictureListFragment);
+export {getPictureElement, pictureList};
