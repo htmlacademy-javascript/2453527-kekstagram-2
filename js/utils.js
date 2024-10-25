@@ -33,4 +33,10 @@ const renderPack = (items, makeElement, container) => {
   container.appendChild(fragment);
 };
 
-export {getRandomNumberRange, getRandomArrayElement, findTemplate, renderPack};
+const clearPack = (element) => {
+  element.innerHTML = '';
+};
+
+const isEscapeKey = (evt) => evt.key === 'Escape';
+
+export {getRandomNumberRange, getRandomArrayElement, findTemplate, renderPack, clearPack, isEscapeKey};

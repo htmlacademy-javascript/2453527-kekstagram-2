@@ -1,7 +1,8 @@
-import {createPost} from './mocks.js';
+import {mocksCards} from './mocks.js';
 import {renderPack} from './utils.js';
-import {getPictureElement, pictureList} from './create-elements.js';
-
-const SIMILAR_POST_COUNT = 25;
-const mocksCards = Array.from({length: SIMILAR_POST_COUNT}, createPost);
+import {getPictureElement, pictureList} from './create-picture-list.js';
 renderPack(mocksCards, getPictureElement, pictureList);
+
+import './render-full-post';
+
+
