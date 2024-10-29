@@ -1,4 +1,6 @@
-import {findTemplate} from './utils.js';
+import {findTemplate, renderPack} from './utils.js';
+import {mocksCards} from './mocks.js';
+
 
 const pictureList = document.querySelector('.pictures');
 const pictureTemplate = findTemplate('picture');
@@ -21,4 +23,4 @@ const getPictureElement = ({url, description, likes, comments}) => {
   return pictureElement;
 };
 
-export {getPictureElement, pictureList};
+renderPack(mocksCards, getPictureElement, pictureList);

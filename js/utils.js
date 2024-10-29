@@ -1,5 +1,5 @@
 // Рандомайзер для чисел в диапазоне
-const getRandomNumberRange = (min = 0, max = 10, stepAfterDot = 0) => {
+export const getRandomNumberRange = (min = 0, max = 10, stepAfterDot = 0) => {
   if ((min < 0) || (max < 0) || (max === min)) {
     window.console.warn('Диапозон должен быть положительным и состоять минимум из 1 цифры');
     return 0;
@@ -10,10 +10,10 @@ const getRandomNumberRange = (min = 0, max = 10, stepAfterDot = 0) => {
   }
   return Math.round(Math.random() * (max - min) + min);
 };
-const getRandomArrayElement = (elements) => elements[getRandomNumberRange(0, elements.length - 1)];
+export const getRandomArrayElement = (elements) => elements[getRandomNumberRange(0, elements.length - 1)];
 
 // Функци для получения шаблона
-const findTemplate = (id) => {
+export const findTemplate = (id) => {
   const template = document.querySelector(`#${id}`);
   if (!template) {
     throw new Error(`Template not found: ${id}`);
@@ -25,7 +25,7 @@ const findTemplate = (id) => {
 };
 
 // Функци для отрисовки шаблона
-const renderPack = (items, makeElement, container) => {
+export const renderPack = (items, makeElement, container) => {
   const fragment = document.createDocumentFragment();
   items.forEach((item) => {
     fragment.appendChild(makeElement(item));
@@ -33,4 +33,8 @@ const renderPack = (items, makeElement, container) => {
   container.appendChild(fragment);
 };
 
-export {getRandomNumberRange, getRandomArrayElement, findTemplate, renderPack};
+export const clearPack = (element) => {
+  element.innerHTML = '';
+};
+
+export const isEscapeKey = (evt) => evt.key === 'Escape';

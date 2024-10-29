@@ -19,6 +19,8 @@ const COMMENTS_NAME = [
   'Вашингтон',
 ];
 
+const SIMILAR_POST_COUNT = 25;
+
 // Замыкание для идентификаторая комментатора, любое без повторения
 const getCommentId = () => {
   const commentIdArr = [];
@@ -43,7 +45,7 @@ const createComment = () => ({
 });
 
 // Функции (замыкание) для создания идентификаторов
-const makeCounter = function () {
+const makeCounter = () => {
   let value = 0;
   return {
     increment: function () {
@@ -65,4 +67,6 @@ const createPost = () => ({
   comments: Array.from({length: getRandomNumberRange(0, 30)}, createComment),
 });
 
-export {createPost};
+const mocksCards = Array.from({length: SIMILAR_POST_COUNT}, createPost);
+
+export {mocksCards};
