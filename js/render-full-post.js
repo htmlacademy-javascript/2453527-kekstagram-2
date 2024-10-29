@@ -1,8 +1,8 @@
 import {mocksCards} from './mocks.js';
-import {isEscapeKey} from './utils.js';
+import {isEscapeKey, renderPack} from './utils.js';
 import {clearPack} from './utils.js';
 
-const pictureCollection = document.getElementsByClassName('picture');
+const pictureCollection = document.querySelectorAll('.picture');
 const postList = document.querySelector('.pictures');
 const fullPost = document.querySelector('.big-picture');
 const closeFullPost = document.querySelector('.big-picture__cancel');
@@ -13,16 +13,18 @@ const fullPhotoDescription = fullPost.querySelector('.social__caption');
 const fullPostTotalComments = fullPost.querySelector('.social__comment-total-count');
 // const fullPostShownComments = fullPost.querySelector('.social__comment-shown-count');
 const commentsContainer = fullPost.querySelector('.social__comments');
+const commentTemplate = fullPost.querySelector('.social__comment');
 const commentsCounter = fullPost.querySelector('.social__comment-count');
 const commentsLoader = fullPost.querySelector('.comments-loader');
 
 
 const onDocumentKeydown = (evt) => {
-  if(isEscapeKey(evt)) {
-    evt.preventDefault();
-    fullPost.classList.add('hidden');
-    document.querySelector('body').classList.remove('modal-open');
+  if (!isEscapeKey(evt)) {
+    return;
   }
+
+  evt.preventDefault();
+  onFullPostClick();
 };
 
 function openPost () {
@@ -30,50 +32,60 @@ function openPost () {
   document.querySelector('body').classList.add('modal-open');
   commentsCounter.classList.add('hidden');
   commentsLoader.classList.add('hidden');
-  document.addEventListener('keydown', onDocumentKeydown);
 }
 
 function closePost () {
   fullPost.classList.add('hidden');
   document.querySelector('body').classList.remove('modal-open');
-  document.removeEventListener('keydown', onDocumentKeydown);
 }
-postList.addEventListener('click', (evt) => {
+
+function onFullPostClick() {
+  closePost();
+  clearPack(commentsContainer);
+  document.removeEventListener('keydown', onDocumentKeydown);
+  postList.addEventListener('click', onClosePostClick);
+  closeFullPost.removeEventListener('click', onFullPostClick);
+}
+
+function onClosePostClick(evt) {
   if (evt.target.closest('.picture')) {
     openPost();
     changePhotoData(evt.target.closest('.picture'), mocksCards);
-  }
-});
-
-closeFullPost.addEventListener('click', () => {
-  closePost();
-  clearPack(commentsContainer);
-});
-
-function changePhotoData (element, mocks) {
-  for (let i = 0; i < pictureCollection.length; i++) {
-    if (element === pictureCollection[i]) {
-      renderComments(mocks[i].comments.length, mocks[i].comments);
-      renderFullPhoto(mocks[i]);
-    }
+    document.addEventListener('keydown', onDocumentKeydown);
+    postList.removeEventListener('click', onClosePostClick);
+    closeFullPost.addEventListener('click', onFullPostClick);
   }
 }
 
-function renderComments (amount, array) {
-  let commentsListFragment = '';
-  for (let i = 0; i < amount; i++) {
-    // const commentTemplate = ''
-    const commentElement = `<li class="social__comment">
-  <img
-    class="social__picture"
-    src="${array[i].avatar}"
-    alt="${array[i].name}"
-    width="35" height="35">
-  <p class="social__text">${array[i].message}</p>
-</li>`;
-    commentsListFragment += commentElement;
-  }
-  commentsContainer.innerHTML = commentsListFragment;
+postList.addEventListener('click', onClosePostClick);
+
+function changePhotoData (element, mocks) {
+  pictureCollection.forEach((item, index) => {
+    if (element === item) {
+      renderComments(mocks[index].comments);
+      renderFullPhoto(mocks[index]);
+    }
+  });
+}
+
+const commentsListFragment = document.createDocumentFragment();
+
+function getCommentElement ({avatar, message, name}) {
+  const commentElement = commentTemplate.cloneNode(true);
+  commentTemplate.querySelector('.social__picture')
+    .src = avatar;
+  commentTemplate.querySelector('.social__picture')
+    .alt = name;
+  commentTemplate.querySelector('.social__text')
+    .textContent = message;
+  commentsListFragment.appendChild(commentElement);
+
+  return commentElement;
+}
+
+function renderComments (array) {
+  clearPack(commentsContainer);
+  renderPack(array, getCommentElement, commentsContainer);
 }
 
 function renderFullPhoto ({comments, description, url, likes}) {
