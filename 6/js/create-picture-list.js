@@ -24,5 +24,3 @@ const getPictureElement = ({url, description, likes, comments}) => {
 };
 
 renderPack(mocksCards, getPictureElement, pictureList);
-
-export {getPictureElement, pictureList};
