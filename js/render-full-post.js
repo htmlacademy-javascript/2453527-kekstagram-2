@@ -95,3 +95,5 @@ function renderFullPhoto ({comments, description, url, likes}) {
   fullPostTotalComments.textContent = comments.length;
   fullPhotoDescription.textContent = description;
 }
+
+export {postList, onClosePostClick};
