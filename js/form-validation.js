@@ -1,5 +1,13 @@
 import {isEscapeKey, inputReset} from './utils.js';
 import {postList, onClosePostClick} from './render-full-post.js';
+import {scaleContainer, onScaleButtonsClick} from './scale-editor.js';
+import {
+  effectsList,
+  onFilterClick,
+  resetPictureStyles,
+  addSliderEvent,
+  removeSliderEvent,
+} from './filter-editor.js';
 
 const editForm = document.querySelector('.img-upload__form');
 const addNewPhotoInput = editForm.querySelector('#upload-file');
@@ -89,6 +97,9 @@ function onInputChange () {
   buttonCloseForm.addEventListener('click', onCloseButtonClick);
   addNewPhotoInput.removeEventListener('change', onInputChange);
   editForm.addEventListener('submit', onFormSubmit);
+  scaleContainer.addEventListener('click', onScaleButtonsClick);
+  effectsList.addEventListener('change', onFilterClick);
+  addSliderEvent();
 }
 
 function onCloseButtonClick () {
@@ -99,6 +110,10 @@ function onCloseButtonClick () {
   buttonCloseForm.removeEventListener('click', onCloseButtonClick);
   addNewPhotoInput.addEventListener('change', onInputChange);
   editForm.removeEventListener('submit', onFormSubmit);
+  scaleContainer.removeEventListener('click', onScaleButtonsClick);
+  effectsList.removeEventListener('change', onFilterClick);
+  removeSliderEvent();
+  resetPictureStyles();
 }
 
 function openEditForm () {
