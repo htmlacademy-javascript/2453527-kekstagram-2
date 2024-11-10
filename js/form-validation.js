@@ -1,6 +1,13 @@
-import {isEscapeKey} from './utils.js';
-import {inputReset} from './utils.js';
+import {isEscapeKey, inputReset} from './utils.js';
 import {postList, onClosePostClick} from './render-full-post.js';
+import {scaleContainer, onScaleButtonsClick} from './scale-editor.js';
+import {
+  effectsList,
+  onFilterClick,
+  resetPictureStyles,
+  addSliderEvent,
+  removeSliderEvent,
+} from './filter-editor.js';
 
 const editForm = document.querySelector('.img-upload__form');
 const addNewPhotoInput = editForm.querySelector('#upload-file');
@@ -9,6 +16,8 @@ const buttonCloseForm = editForm.querySelector('.img-upload__cancel');
 const hashtagsInput = editForm.querySelector('.text__hashtags');
 const descriptionInput = editForm.querySelector('.text__description');
 const hashtag = /^#[a-zа-яё0-9]{1,19}$/i;
+const MAX_DESCRIPTION_LENGTH = 140;
+const MAX_HASHTAGS_LENGTH = 5;
 
 // Валидация формы
 
@@ -20,11 +29,11 @@ const pristine = new Pristine(editForm, {
 
 function validateHashtag (value) {
   const valueArr = value.trim().toLowerCase().split(' ');
-  if (valueArr.length > 5) {
+  if (valueArr.length > MAX_HASHTAGS_LENGTH) {
     return false;
   }
   for (let i = 0; i < valueArr.length; i++) {
-    if (!hashtag.test(valueArr[i])) {
+    if (!hashtag.test(valueArr[i]) && value.length !== 0) {
       return false;
     }
     for (let k = i + 1; k < valueArr.length; k++) {
@@ -38,11 +47,11 @@ function validateHashtag (value) {
 
 function getHashtagErrorMessage (value) {
   const valueArr = value.trim().toLowerCase().split(' ');
-  if (valueArr.length > 5) {
+  if (valueArr.length > MAX_HASHTAGS_LENGTH) {
     return 'Превышено количество хэштегов';
   }
   for (let i = 0; i < valueArr.length; i++) {
-    if (!hashtag.test(valueArr[i])) {
+    if (!hashtag.test(valueArr[i]) && value.length !== 0) {
       return 'Введён невалидный хэштег';
     }
     for (let k = i + 1; k < valueArr.length; k++) {
@@ -55,7 +64,7 @@ function getHashtagErrorMessage (value) {
 }
 
 function validateDescription (value) {
-  return !(value.length > 140);
+  return !(value.length > MAX_DESCRIPTION_LENGTH);
 }
 
 pristine.addValidator(hashtagsInput, validateHashtag, getHashtagErrorMessage);
@@ -88,6 +97,9 @@ function onInputChange () {
   buttonCloseForm.addEventListener('click', onCloseButtonClick);
   addNewPhotoInput.removeEventListener('change', onInputChange);
   editForm.addEventListener('submit', onFormSubmit);
+  scaleContainer.addEventListener('click', onScaleButtonsClick);
+  effectsList.addEventListener('change', onFilterClick);
+  addSliderEvent();
 }
 
 function onCloseButtonClick () {
@@ -98,6 +110,10 @@ function onCloseButtonClick () {
   buttonCloseForm.removeEventListener('click', onCloseButtonClick);
   addNewPhotoInput.addEventListener('change', onInputChange);
   editForm.removeEventListener('submit', onFormSubmit);
+  scaleContainer.removeEventListener('click', onScaleButtonsClick);
+  effectsList.removeEventListener('change', onFilterClick);
+  removeSliderEvent();
+  resetPictureStyles();
 }
 
 function openEditForm () {
