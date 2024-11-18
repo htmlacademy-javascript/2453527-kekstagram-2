@@ -1,6 +1,4 @@
-import {findTemplate, renderPack} from './utils.js';
-import {mocksCards} from './mocks.js';
-
+import {findTemplate} from './utils.js';
 
 const pictureList = document.querySelector('.pictures');
 const pictureTemplate = findTemplate('picture');
@@ -8,8 +6,9 @@ const pictureTemplate = findTemplate('picture');
 const pictureListFragment = document.createDocumentFragment();
 
 // Функция, создающая картинку
-const getPictureElement = ({url, description, likes, comments}) => {
+const getPictureElement = ({id, url, description, likes, comments}) => {
   const pictureElement = pictureTemplate.cloneNode(true);
+  pictureElement.setAttribute('id', id);
   pictureElement.querySelector('.picture__img')
     .setAttribute('src', url);
   pictureElement.querySelector('.picture__img')
@@ -23,4 +22,4 @@ const getPictureElement = ({url, description, likes, comments}) => {
   return pictureElement;
 };
 
-renderPack(mocksCards, getPictureElement, pictureList);
+export {getPictureElement, pictureList};

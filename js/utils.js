@@ -1,16 +1,5 @@
-// Рандомайзер для чисел в диапазоне
-export const getRandomNumberRange = (min = 0, max = 10, stepAfterDot = 0) => {
-  if ((min < 0) || (max < 0) || (max === min)) {
-    window.console.warn('Диапозон должен быть положительным и состоять минимум из 1 цифры');
-    return 0;
-  } else if (stepAfterDot) {
-    const a = (Math.round((Math.random() * (max - min) + min) * 10 ** stepAfterDot)) / (10 ** stepAfterDot);
-    const b = (Math.round((Math.random() * (min - max) + max) * 10 ** stepAfterDot)) / (10 ** stepAfterDot);
-    return min < max ? a : b;
-  }
-  return Math.round(Math.random() * (max - min) + min);
-};
-export const getRandomArrayElement = (elements) => elements[getRandomNumberRange(0, elements.length - 1)];
+const ALERT_GET_TIME = 5000;
+const SHOW_ALERT_ERROR = 'id не найден';
 
 // Функци для получения шаблона
 export const findTemplate = (id) => {
@@ -42,3 +31,41 @@ export const inputReset = (...args) => {
 };
 
 export const isEscapeKey = (evt) => evt.key === 'Escape';
+
+const onDocumentKeydown = (evt) => {
+  if (!isEscapeKey(evt)) {
+    return;
+  }
+  evt.stopPropagation();
+  evt.preventDefault();
+  closeAlert();
+};
+
+const onAlertButtonClick = (evt) => {
+  if (evt.target.closest('.success__button') || evt.target.closest('.error__button') || !evt.target.closest('#alert__inner')) {
+    closeAlert();
+  }
+};
+
+function closeAlert () {
+  const alertTemplate = document.querySelector('#alert');
+  alertTemplate.remove();
+  document.body.removeEventListener('keydown', onDocumentKeydown);
+}
+
+export function showAlert (id) {
+  const alertTemplate = findTemplate(`${id}`).cloneNode(true);
+  alertTemplate.id = 'alert';
+  alertTemplate.firstElementChild.id = 'alert__inner';
+  document.body.appendChild(alertTemplate);
+  if (id === 'success' || id === 'error') {
+    alertTemplate.addEventListener('click', onAlertButtonClick);
+    document.body.addEventListener('keydown', onDocumentKeydown);
+  } else if (id === 'data-error') {
+    setTimeout(() => {
+      alertTemplate.remove();
+    }, ALERT_GET_TIME);
+  } else {
+    throw new Error(SHOW_ALERT_ERROR);
+  }
+}

@@ -1,8 +1,7 @@
-import {mocksCards} from './mocks.js';
-import {isEscapeKey, renderPack} from './utils.js';
-import {clearPack} from './utils.js';
+import {isEscapeKey, renderPack, clearPack, showAlert} from './utils.js';
+import {getData} from './api.js';
+import {getPictureElement, pictureList} from './create-picture-list';
 
-const pictureCollection = document.querySelectorAll('.picture');
 const postList = document.querySelector('.pictures');
 const fullPost = document.querySelector('.big-picture');
 const closeFullPost = document.querySelector('.big-picture__cancel');
@@ -16,7 +15,16 @@ const commentsContainer = fullPost.querySelector('.social__comments');
 const commentTemplate = fullPost.querySelector('.social__comment');
 const commentsCounter = fullPost.querySelector('.social__comment-count');
 const commentsLoader = fullPost.querySelector('.comments-loader');
+let picturesData;
 
+getData()
+  .then((photos) => {
+    picturesData = photos;
+    renderPack(photos, getPictureElement, pictureList);
+  })
+  .catch(() => {
+    showAlert('data-error');
+  });
 
 const onDocumentKeydown = (evt) => {
   if (!isEscapeKey(evt)) {
@@ -43,44 +51,40 @@ function onFullPostClick() {
   closePost();
   clearPack(commentsContainer);
   document.removeEventListener('keydown', onDocumentKeydown);
-  postList.addEventListener('click', onClosePostClick);
+  postList.addEventListener('click', onSmallPostClick);
   closeFullPost.removeEventListener('click', onFullPostClick);
 }
 
-function onClosePostClick(evt) {
+function onSmallPostClick(evt) {
   if (evt.target.closest('.picture')) {
     openPost();
-    changePhotoData(evt.target.closest('.picture'), mocksCards);
+    changePhotoData(evt.target.closest('.picture'), picturesData);
     document.addEventListener('keydown', onDocumentKeydown);
-    postList.removeEventListener('click', onClosePostClick);
+    postList.removeEventListener('click', onSmallPostClick);
     closeFullPost.addEventListener('click', onFullPostClick);
   }
 }
 
-postList.addEventListener('click', onClosePostClick);
-
-function changePhotoData (element, mocks) {
-  pictureCollection.forEach((item, index) => {
-    if (element === item) {
-      renderComments(mocks[index].comments);
-      renderFullPhoto(mocks[index]);
-    }
-  });
+postList.addEventListener('click', onSmallPostClick);
+function changePhotoData (element, data) {
+  const id = element.id;
+  renderComments(data[id].comments);
+  renderFullPhoto(data[id]);
 }
 
 const commentsListFragment = document.createDocumentFragment();
 
 function getCommentElement ({avatar, message, name}) {
   const commentElement = commentTemplate.cloneNode(true);
-  commentTemplate.querySelector('.social__picture')
+  commentElement.querySelector('.social__picture')
     .src = avatar;
-  commentTemplate.querySelector('.social__picture')
+  commentElement.querySelector('.social__picture')
     .alt = name;
-  commentTemplate.querySelector('.social__text')
+  commentElement.querySelector('.social__text')
     .textContent = message;
   commentsListFragment.appendChild(commentElement);
 
-  return commentElement;
+  return commentsListFragment;
 }
 
 function renderComments (array) {
@@ -96,4 +100,4 @@ function renderFullPhoto ({comments, description, url, likes}) {
   fullPhotoDescription.textContent = description;
 }
 
-export {postList, onClosePostClick};
+export {postList, onSmallPostClick};
