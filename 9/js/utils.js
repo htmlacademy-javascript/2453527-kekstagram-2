@@ -1,5 +1,12 @@
+const ALERT_IDS = {
+  SUCCESS: 'success',
+  ERROR: 'error',
+  DATA_ERROR: 'data-error',
+};
+
 const ALERT_GET_TIME = 5000;
-const SHOW_ALERT_ERROR = 'id не найден';
+const SHOW_ALERT_ERROR = 'Invalid alert ID';
+const buttonClasses = ['.success__button', '.error__button'];
 
 // Функци для получения шаблона
 export const findTemplate = (id) => {
@@ -32,7 +39,9 @@ export const inputReset = (...args) => {
 
 export const isEscapeKey = (evt) => evt.key === 'Escape';
 
-const onDocumentKeydown = (evt) => {
+// Функции для отрисовок служебных алертов
+
+const onBodyKeydown = (evt) => {
   if (!isEscapeKey(evt)) {
     return;
   }
@@ -42,15 +51,26 @@ const onDocumentKeydown = (evt) => {
 };
 
 const onAlertButtonClick = (evt) => {
-  if (evt.target.closest('.success__button') || evt.target.closest('.error__button') || !evt.target.closest('#alert__inner')) {
+  const isButtonClicked = buttonClasses.some((className) => evt.target.closest(className));
+  const isInnerClicked = evt.target.closest('#alert__inner');
+  if (isButtonClicked || !isInnerClicked) {
     closeAlert();
   }
 };
 
+function addAlertEventListeners(alertTemplate) {
+  alertTemplate.addEventListener('click', onAlertButtonClick);
+  document.body.addEventListener('keydown', onBodyKeydown);
+}
+
+function removeAlertEventListeners() {
+  document.body.removeEventListener('keydown', onBodyKeydown);
+}
+
 function closeAlert () {
   const alertTemplate = document.querySelector('#alert');
   alertTemplate.remove();
-  document.body.removeEventListener('keydown', onDocumentKeydown);
+  removeAlertEventListeners();
 }
 
 export function showAlert (id) {
@@ -58,14 +78,20 @@ export function showAlert (id) {
   alertTemplate.id = 'alert';
   alertTemplate.firstElementChild.id = 'alert__inner';
   document.body.appendChild(alertTemplate);
-  if (id === 'success' || id === 'error') {
-    alertTemplate.addEventListener('click', onAlertButtonClick);
-    document.body.addEventListener('keydown', onDocumentKeydown);
-  } else if (id === 'data-error') {
-    setTimeout(() => {
-      alertTemplate.remove();
-    }, ALERT_GET_TIME);
-  } else {
-    throw new Error(SHOW_ALERT_ERROR);
+  switch (id) {
+    case ALERT_IDS.SUCCESS:
+    case ALERT_IDS.ERROR:
+      addAlertEventListeners(alertTemplate);
+      break;
+
+    case ALERT_IDS.DATA_ERROR:
+      setTimeout(() => {
+        alertTemplate.remove();
+        removeAlertEventListeners();
+      }, ALERT_GET_TIME);
+      break;
+
+    default:
+      throw new Error(SHOW_ALERT_ERROR);
   }
 }
