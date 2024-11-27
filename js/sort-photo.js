@@ -44,24 +44,19 @@ const addActiveClass = (evt) => {
   evt.target.closest('.img-filters__button').classList.add('img-filters__button--active');
 };
 
-const onFilterSortClickDebounce = (fn, ...args) => {
-  const fnDeb = debounce(fn, RERENDER_DELAY);
-  return fnDeb(...args);
-};
-
 const onFilterSortClick = (evt) => {
   if (evt.target.closest('#filter-default')) {
-    addActiveClass(evt);
-    onFilterSortClickDebounce(getDefaultSortPhotos, picturesData);
+    getDefaultSortPhotos(picturesData);
   } else if (evt.target.closest('#filter-random')) {
-    addActiveClass(evt);
-    onFilterSortClickDebounce(getRandomPhotos, picturesData);
+    getRandomPhotos(picturesData);
   } else if (evt.target.closest('#filter-discussed')) {
-    addActiveClass(evt);
-    onFilterSortClickDebounce(getPopularPhotos, picturesData);
+    getPopularPhotos(picturesData);
   }
 };
 
-filterSort.addEventListener('click', onFilterSortClick);
+function addFilterEventListeners() {
+  filterSort.addEventListener('click', debounce(onFilterSortClick, RERENDER_DELAY));
+  filterSort.addEventListener('mouseup', addActiveClass);
+}
 
-export {filterSort, onFilterSortClick};
+export {filterSort, addActiveClass, addFilterEventListeners};

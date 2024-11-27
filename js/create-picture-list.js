@@ -1,6 +1,6 @@
 import {getData} from './api.js';
 import {findTemplate, renderPack, showAlert} from './utils.js';
-import {filterSort} from './sort-photo.js';
+import {filterSort, addFilterEventListeners} from './sort-photo.js';
 
 const pictureList = document.querySelector('.pictures');
 const pictureTemplate = findTemplate('picture');
@@ -31,6 +31,7 @@ getData()
     picturesData = photos;
     renderPack(photos, getPictureElement, pictureList);
     filterSort.classList.remove('img-filters--inactive');
+    addFilterEventListeners();
   })
   .catch(() => {
     showAlert('data-error');

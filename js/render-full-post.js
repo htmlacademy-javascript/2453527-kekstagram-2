@@ -1,6 +1,6 @@
 import {isEscapeKey, renderPack, clearPack} from './utils.js';
 import {picturesData} from './create-picture-list.js';
-import {filterSort, onFilterSortClick} from './sort-photo.js';
+import {filterSort, addActiveClass} from './sort-photo.js';
 
 const postList = document.querySelector('.pictures');
 const fullPost = document.querySelector('.big-picture');
@@ -37,7 +37,7 @@ function closePost () {
 function onFullPostClick() {
   closePost();
   clearPack(commentsContainer);
-  filterSort.addEventListener('click', onFilterSortClick);
+  filterSort.addEventListener('mouseup', addActiveClass);
   document.removeEventListener('keydown', onDocumentKeydown);
   postList.addEventListener('click', onSmallPostClick);
   closeFullPost.removeEventListener('click', onFullPostClick);
@@ -48,7 +48,7 @@ function onSmallPostClick(evt) {
     openPost();
     commentsLoader.classList.remove('hidden');
     changePhotoData(evt.target.closest('.picture'), picturesData);
-    filterSort.removeEventListener('click', onFilterSortClick);
+    filterSort.removeEventListener('mouseup', addActiveClass);
     document.addEventListener('keydown', onDocumentKeydown);
     postList.removeEventListener('click', onSmallPostClick);
     closeFullPost.addEventListener('click', onFullPostClick);
