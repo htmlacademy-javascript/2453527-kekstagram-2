@@ -1,5 +1,5 @@
 import {picturesData, pictureList, getPictureElement} from './create-picture-list.js';
-import {getRandomArrayElement, renderPack, debounce} from './utils';
+import {getRandomArrayElement, renderPack, debounce} from './utils.js';
 
 const filterSort = document.querySelector('.img-filters');
 const RERENDER_DELAY = 500;

@@ -36,7 +36,7 @@ const pristine = new Pristine(editForm, {
 });
 
 function validateHashtag (value) {
-  const valueArr = value.trim().toLowerCase().split(' ');
+  const valueArr = value.trim().toLowerCase().split(' ').filter((item) => item !== '');
   if (valueArr.length > MAX_HASHTAGS_LENGTH) {
     return false;
   }
@@ -73,6 +73,16 @@ function getHashtagErrorMessage (value) {
 
 function validateDescription (value) {
   return !(value.length > MAX_DESCRIPTION_LENGTH);
+}
+
+function removeValidatorContainer () {
+  const pristineContainer = editForm.querySelectorAll('.pristine-error');
+  if (!pristineContainer) {
+    return;
+  }
+  pristineContainer.forEach((item) => {
+    item.remove();
+  });
 }
 
 pristine.addValidator(hashtagsInput, validateHashtag, getHashtagErrorMessage);
@@ -157,6 +167,7 @@ function closeEditForm () {
   addNewPhotoInput.addEventListener('change', onInputChange);
   scaleContainer.removeEventListener('click', onScaleButtonsClick);
   effectsList.removeEventListener('change', onFilterClick);
+  removeValidatorContainer();
   removeSliderEvent();
   resetPictureStyles();
   editForm.removeEventListener('submit', onEditFormSubmit);

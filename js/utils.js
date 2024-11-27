@@ -48,7 +48,9 @@ export const clearPack = (element) => {
 };
 
 export const inputReset = (...args) => {
-  args.value = '';
+  args.forEach((item) => {
+    item.value = '';
+  });
 };
 
 export const isEscapeKey = (evt) => evt.key === 'Escape';
