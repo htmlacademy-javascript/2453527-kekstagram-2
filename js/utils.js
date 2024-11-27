@@ -8,6 +8,20 @@ const ALERT_GET_TIME = 5000;
 const SHOW_ALERT_ERROR = 'Invalid alert ID';
 const buttonClasses = ['.success__button', '.error__button'];
 
+// Рандомайзер для чисел в диапазоне
+export const getRandomNumberRange = (min = 0, max = 10, stepAfterDot = 0) => {
+  if ((min < 0) || (max < 0) || (max === min)) {
+    window.console.warn('Диапозон должен быть положительным и состоять минимум из 1 цифры');
+    return 0;
+  } else if (stepAfterDot) {
+    const a = (Math.round((Math.random() * (max - min) + min) * 10 ** stepAfterDot)) / (10 ** stepAfterDot);
+    const b = (Math.round((Math.random() * (min - max) + max) * 10 ** stepAfterDot)) / (10 ** stepAfterDot);
+    return min < max ? a : b;
+  }
+  return Math.round(Math.random() * (max - min) + min);
+};
+export const getRandomArrayElement = (elements) => elements[getRandomNumberRange(0, elements.length - 1)];
+
 // Функци для получения шаблона
 export const findTemplate = (id) => {
   const template = document.querySelector(`#${id}`);
@@ -95,3 +109,11 @@ export function showAlert (id) {
       throw new Error(SHOW_ALERT_ERROR);
   }
 }
+
+export const debounce = (callback, timeoutDelay) => {
+  let timeoutID;
+  return (...rest) => {
+    clearTimeout(timeoutID);
+    timeoutID = setTimeout(() => callback.apply(this, rest), timeoutDelay);
+  };
+};

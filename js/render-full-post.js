@@ -1,6 +1,6 @@
-import {isEscapeKey, renderPack, clearPack, showAlert} from './utils.js';
-import {getData} from './api.js';
-import {getPictureElement, pictureList} from './create-picture-list';
+import {isEscapeKey, renderPack, clearPack} from './utils.js';
+import {picturesData} from './create-picture-list.js';
+import {filterSort, addActiveClass} from './sort-photo.js';
 
 const postList = document.querySelector('.pictures');
 const fullPost = document.querySelector('.big-picture');
@@ -14,16 +14,6 @@ const fullPostShownComments = fullPost.querySelector('.social__comment-shown-cou
 const commentsContainer = fullPost.querySelector('.social__comments');
 const commentTemplate = fullPost.querySelector('.social__comment');
 const commentsLoader = fullPost.querySelector('.comments-loader');
-let picturesData;
-
-getData()
-  .then((photos) => {
-    picturesData = photos;
-    renderPack(photos, getPictureElement, pictureList);
-  })
-  .catch(() => {
-    showAlert('data-error');
-  });
 
 const onDocumentKeydown = (evt) => {
   if (!isEscapeKey(evt)) {
@@ -47,6 +37,7 @@ function closePost () {
 function onFullPostClick() {
   closePost();
   clearPack(commentsContainer);
+  filterSort.addEventListener('mouseup', addActiveClass);
   document.removeEventListener('keydown', onDocumentKeydown);
   postList.addEventListener('click', onSmallPostClick);
   closeFullPost.removeEventListener('click', onFullPostClick);
@@ -57,6 +48,7 @@ function onSmallPostClick(evt) {
     openPost();
     commentsLoader.classList.remove('hidden');
     changePhotoData(evt.target.closest('.picture'), picturesData);
+    filterSort.removeEventListener('mouseup', addActiveClass);
     document.addEventListener('keydown', onDocumentKeydown);
     postList.removeEventListener('click', onSmallPostClick);
     closeFullPost.addEventListener('click', onFullPostClick);
