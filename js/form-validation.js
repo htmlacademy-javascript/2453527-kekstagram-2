@@ -9,6 +9,7 @@ import {
   removeSliderEvent,
 } from './filter-editor.js';
 import {sendData} from './api.js';
+import {getUserPhoto} from './user-photo.js';
 
 const SubmitButtonText = {
   IDLE: 'Опубликовать',
@@ -126,6 +127,7 @@ const onDocumentKeydown = (evt) => {
 
 function onInputChange () {
   openEditForm();
+  getUserPhoto();
 }
 
 function onCloseButtonClick () {
