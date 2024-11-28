@@ -2,6 +2,15 @@ import {isEscapeKey, renderPack, clearPack} from './utils.js';
 import {picturesData} from './create-picture-list.js';
 import {filterSort, addActiveClass} from './sort-photo.js';
 
+const commentsRenderingInfo = {
+  array: [],
+  maxComments: '',
+  SHOWN_STEP: 5,
+  counterShownBegin: 0,
+  counterShownEnd: 5,
+  flag: 0
+};
+
 const postList = document.querySelector('.pictures');
 const fullPost = document.querySelector('.big-picture');
 const closeFullPost = document.querySelector('.big-picture__cancel');
@@ -40,6 +49,7 @@ function onFullPostClick() {
   filterSort.addEventListener('mouseup', addActiveClass);
   document.removeEventListener('keydown', onDocumentKeydown);
   postList.addEventListener('click', onSmallPostClick);
+  removeCommentsLoaderClick();
   closeFullPost.removeEventListener('click', onFullPostClick);
 }
 
@@ -82,60 +92,45 @@ function renderFullPhoto ({comments, description, url, likes}) {
 
 // Реализация видимых комментариев
 
-class Comments {
-  constructor (array = []) {
-    this.array = array;
-    this.maxComments = this.array.length;
-    this.SHOWN_STEP = 5;
-    this.counterShownBegin = 0;
-    this.counterShownEnd = 5;
-  }
-
-  renderComments() {
+function renderComments(array) {
+  if (!commentsRenderingInfo.flag) {
+    commentsRenderingInfo.maxComments = array.length;
+    commentsRenderingInfo.array = array.slice();
     clearPack(commentsContainer);
-    if (this.maxComments <= this.SHOWN_STEP) {
-      renderPack(this.array, getCommentElement, commentsContainer);
-      commentsLoader.classList.add('hidden');
-      fullPostShownComments.textContent = this.maxComments;
-      return;
-    }
-    renderPack(this.array.slice(this.counterShownBegin, this.counterShownEnd), getCommentElement, commentsContainer);
-    fullPostShownComments.textContent = this.counterShownEnd;
-    this.addCommentsLoaderClick();
-    this.counterShownBegin += this.SHOWN_STEP;
-    this.counterShownEnd += this.SHOWN_STEP;
   }
-
-  renderMoreComments () {
-    if ((this.maxComments - this.counterShownBegin) < this.SHOWN_STEP) {
-      renderPack(this.array.slice(this.counterShownBegin, this.maxComments), getCommentElement, commentsContainer);
-      commentsLoader.classList.add('hidden');
-      fullPostShownComments.textContent = this.maxComments;
-      this.removeCommentsLoaderClick();
-      return;
-    }
-
-    renderPack(this.array.slice(this.counterShownBegin, this.counterShownEnd), getCommentElement, commentsContainer);
-    fullPostShownComments.textContent = this.counterShownEnd;
-    this.counterShownBegin += this.SHOWN_STEP;
-    this.counterShownEnd += this.SHOWN_STEP;
+  if ((commentsRenderingInfo.maxComments - commentsRenderingInfo.counterShownBegin) <= commentsRenderingInfo.SHOWN_STEP) {
+    renderPack(commentsRenderingInfo.array.slice(commentsRenderingInfo.counterShownBegin, commentsRenderingInfo.maxComments), getCommentElement, commentsContainer);
+    commentsLoader.classList.add('hidden');
+    fullPostShownComments.textContent = commentsRenderingInfo.maxComments;
+    commentsLoader.classList.add('hidden');
+    removeCommentsLoaderClick();
+    return;
   }
+  renderPack(commentsRenderingInfo.array.slice(commentsRenderingInfo.counterShownBegin, commentsRenderingInfo.counterShownEnd), getCommentElement, commentsContainer);
+  fullPostShownComments.textContent = commentsRenderingInfo.counterShownEnd.toString();
+  addCommentsLoaderClick();
+  commentsRenderingInfo.counterShownBegin += commentsRenderingInfo.SHOWN_STEP;
+  commentsRenderingInfo.counterShownEnd += commentsRenderingInfo.SHOWN_STEP;
+  commentsRenderingInfo.flag += 1;
+}
 
-  onCommentsLoaderClick = () => this.renderMoreComments();
+const onCommentsLoaderClick = () => renderComments(commentsRenderingInfo.array);
 
-  addCommentsLoaderClick () {
-    commentsLoader.addEventListener('click', this.onCommentsLoaderClick);
-  }
+function addCommentsLoaderClick () {
+  commentsLoader.addEventListener('click', onCommentsLoaderClick);
+}
 
-  removeCommentsLoaderClick () {
-    commentsLoader.removeEventListener('click', this.onCommentsLoaderClick);
-  }
+function removeCommentsLoaderClick () {
+  commentsRenderingInfo.counterShownBegin = 0;
+  commentsRenderingInfo.counterShownEnd = 5;
+  commentsRenderingInfo.flag = 0;
+  commentsLoader.removeEventListener('click', onCommentsLoaderClick);
 }
 
 function changePhotoData (element, data) {
   const id = element.id;
-  const array = new Comments(data[id].comments);
-  array.renderComments();
+  const array = data[id].comments;
+  renderComments(array);
   renderFullPhoto(data[id]);
 }
 
