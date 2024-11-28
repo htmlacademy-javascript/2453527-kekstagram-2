@@ -29,7 +29,7 @@ const getPictureElement = ({id, url, description, likes, comments}) => {
 getData()
   .then((photos) => {
     picturesData = photos;
-    renderPack(photos, getPictureElement, pictureList);
+    renderPack(picturesData, getPictureElement, pictureList);
     filterSort.classList.remove('img-filters--inactive');
     addFilterEventListeners();
   })

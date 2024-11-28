@@ -10,11 +10,15 @@ import {
 } from './filter-editor.js';
 import {sendData} from './api.js';
 import {getUserPhoto} from './user-photo.js';
+import {scaleInput, MAX_SCALE_VALUE} from './scale-editor.js';
 
 const SubmitButtonText = {
   IDLE: 'Опубликовать',
   SENDING: 'Публикую...'
 };
+
+const MAX_DESCRIPTION_LENGTH = 140;
+const MAX_HASHTAGS_LENGTH = 5;
 
 const editForm = document.querySelector('.img-upload__form');
 const addNewPhotoInput = editForm.querySelector('#upload-file');
@@ -24,8 +28,6 @@ const submitButton = editForm.querySelector('.img-upload__submit');
 const hashtagsInput = editForm.querySelector('.text__hashtags');
 const descriptionInput = editForm.querySelector('.text__description');
 const hashtag = /^#[a-zа-яё0-9]{1,19}$/i;
-const MAX_DESCRIPTION_LENGTH = 140;
-const MAX_HASHTAGS_LENGTH = 5;
 
 // Валидация формы
 
@@ -36,7 +38,7 @@ const pristine = new Pristine(editForm, {
 });
 
 function validateHashtag (value) {
-  const valueArr = value.trim().toLowerCase().split(' ');
+  const valueArr = value.trim().toLowerCase().split(' ').filter((item) => item !== '');
   if (valueArr.length > MAX_HASHTAGS_LENGTH) {
     return false;
   }
@@ -73,6 +75,16 @@ function getHashtagErrorMessage (value) {
 
 function validateDescription (value) {
   return !(value.length > MAX_DESCRIPTION_LENGTH);
+}
+
+function removeValidatorContainer () {
+  const pristineContainer = editForm.querySelectorAll('.pristine-error');
+  if (!pristineContainer) {
+    return;
+  }
+  pristineContainer.forEach((item) => {
+    item.remove();
+  });
 }
 
 pristine.addValidator(hashtagsInput, validateHashtag, getHashtagErrorMessage);
@@ -121,7 +133,7 @@ const onDocumentKeydown = (evt) => {
     evt.stopPropagation();
   } else {
     evt.preventDefault();
-    onCloseButtonClick();
+    closeEditForm();
   }
 };
 
@@ -157,8 +169,10 @@ function closeEditForm () {
   addNewPhotoInput.addEventListener('change', onInputChange);
   scaleContainer.removeEventListener('click', onScaleButtonsClick);
   effectsList.removeEventListener('change', onFilterClick);
+  removeValidatorContainer();
   removeSliderEvent();
   resetPictureStyles();
+  scaleInput.value = MAX_SCALE_VALUE;
   editForm.removeEventListener('submit', onEditFormSubmit);
 }
 

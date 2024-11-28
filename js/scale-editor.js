@@ -29,4 +29,4 @@ function onScaleButtonsClick (evt) {
   }
 }
 
-export {scaleContainer, onScaleButtonsClick};
+export {scaleContainer, onScaleButtonsClick, scaleInput, MAX_SCALE_VALUE};

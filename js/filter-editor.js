@@ -11,35 +11,35 @@ const filters = {
     min: 0,
     max: 1,
     step: 0.1,
-    metrics: '',
+    metrics: ''
   },
   sepia: {
     filter: 'sepia',
     min: 0,
     max: 1,
     step: 0.1,
-    metrics: '',
+    metrics: ''
   },
   marvin: {
     filter: 'invert',
     min: 0,
     max: 100,
     step: 1,
-    metrics: '%',
+    metrics: '%'
   },
   phobos: {
     filter: 'blur',
     min: 0,
     max: 3,
     step: 0.1,
-    metrics: 'px',
+    metrics: 'px'
   },
   heat: {
     filter: 'brightness',
     min: 1,
     max: 3,
     step: 0.1,
-    metrics: '',
+    metrics: ''
   },
 };
 
@@ -58,8 +58,8 @@ function addSliderEvent () {
     if (!filterObject) {
       return;
     }
-    effectLevelInput.value = sliderElement.noUiSlider.get();
-    editedPicture.style.filter = `${filterObject.filter}(${effectLevelInput.value + filterObject.metrics})`;
+    effectLevelInput.value = Math.round(sliderElement.noUiSlider.get() * 10) * 0.1;
+    editedPicture.style.filter = `${filterObject.filter}(${effectLevelInput.value}${filterObject.metrics})`;
   });
 }
 
