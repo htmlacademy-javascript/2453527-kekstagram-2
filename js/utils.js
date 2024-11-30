@@ -6,6 +6,7 @@ const ALERT_IDS = {
 
 const ALERT_GET_TIME = 5000;
 const SHOW_ALERT_ERROR = 'Invalid alert ID';
+
 const buttonClasses = ['.success__button', '.error__button'];
 
 // Рандомайзер для чисел в диапазоне
@@ -20,6 +21,7 @@ export const getRandomNumberRange = (min = 0, max = 10, stepAfterDot = 0) => {
   }
   return Math.round(Math.random() * (max - min) + min);
 };
+
 export const getRandomArrayElement = (elements) => elements[getRandomNumberRange(0, elements.length - 1)];
 
 // Функци для получения шаблона
@@ -74,14 +76,14 @@ const onAlertButtonClick = (evt) => {
   }
 };
 
-function addAlertEventListeners(alertTemplate) {
+const addAlertEventListeners = (alertTemplate) => {
   alertTemplate.addEventListener('click', onAlertButtonClick);
   document.body.addEventListener('keydown', onBodyKeydown);
-}
+};
 
-function removeAlertEventListeners() {
+const removeAlertEventListeners = () => {
   document.body.removeEventListener('keydown', onBodyKeydown);
-}
+};
 
 function closeAlert () {
   const alertTemplate = document.querySelector('#alert');
@@ -89,7 +91,7 @@ function closeAlert () {
   removeAlertEventListeners();
 }
 
-export function showAlert (id) {
+export const showAlert = (id) => {
   const alertTemplate = findTemplate(`${id}`).cloneNode(true);
   alertTemplate.id = 'alert';
   alertTemplate.firstElementChild.id = 'alert__inner';
@@ -110,7 +112,7 @@ export function showAlert (id) {
     default:
       throw new Error(SHOW_ALERT_ERROR);
   }
-}
+};
 
 export const debounce = (callback, timeoutDelay) => {
   let timeoutID;

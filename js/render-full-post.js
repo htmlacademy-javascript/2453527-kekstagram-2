@@ -3,7 +3,7 @@ import {picturesData} from './create-picture-list.js';
 import {filterSort, addActiveClass} from './sort-photo.js';
 
 const commentsRenderingInfo = {
-  array: [],
+  comments: [],
   maxComments: '',
   SHOWN_STEP: 5,
   counterShownBegin: 0,
@@ -33,43 +33,21 @@ const onDocumentKeydown = (evt) => {
   onFullPostClick();
 };
 
-function openPost () {
+const openPost = () => {
   fullPost.classList.remove('hidden');
   document.querySelector('body').classList.add('modal-open');
-}
+};
 
-function closePost () {
+const closePost = () => {
   fullPost.classList.add('hidden');
   document.querySelector('body').classList.remove('modal-open');
-}
-
-function onFullPostClick() {
-  closePost();
-  clearPack(commentsContainer);
-  filterSort.addEventListener('mouseup', addActiveClass);
-  document.removeEventListener('keydown', onDocumentKeydown);
-  postList.addEventListener('click', onSmallPostClick);
-  removeCommentsLoaderClick();
-  closeFullPost.removeEventListener('click', onFullPostClick);
-}
-
-function onSmallPostClick(evt) {
-  if (evt.target.closest('.picture')) {
-    openPost();
-    commentsLoader.classList.remove('hidden');
-    changePhotoData(evt.target.closest('.picture'), picturesData);
-    filterSort.removeEventListener('mouseup', addActiveClass);
-    document.addEventListener('keydown', onDocumentKeydown);
-    postList.removeEventListener('click', onSmallPostClick);
-    closeFullPost.addEventListener('click', onFullPostClick);
-  }
-}
+};
 
 postList.addEventListener('click', onSmallPostClick);
 
 const commentsListFragment = document.createDocumentFragment();
 
-function getCommentElement ({avatar, message, name}) {
+const getCommentElement = ({avatar, message, name}) => {
   const commentElement = commentTemplate.cloneNode(true);
   commentElement.querySelector('.social__picture')
     .src = avatar;
@@ -80,41 +58,41 @@ function getCommentElement ({avatar, message, name}) {
   commentsListFragment.appendChild(commentElement);
 
   return commentsListFragment;
-}
+};
 
-function renderFullPhoto ({comments, description, url, likes}) {
+const renderFullPhoto = ({comments, description, url, likes}) => {
   fullPostPhoto.src = url;
   fullPostPhoto.alt = description;
   fullPostLikes.textContent = likes;
   fullPostTotalComments.textContent = comments.length;
   fullPhotoDescription.textContent = description;
-}
+};
 
 // Реализация видимых комментариев
 
-function renderComments(array) {
+const renderComments = (comments) => {
   if (!commentsRenderingInfo.flag) {
-    commentsRenderingInfo.maxComments = array.length;
-    commentsRenderingInfo.array = array.slice();
+    commentsRenderingInfo.maxComments = comments.length;
+    commentsRenderingInfo.comments = comments.slice();
     clearPack(commentsContainer);
   }
   if ((commentsRenderingInfo.maxComments - commentsRenderingInfo.counterShownBegin) <= commentsRenderingInfo.SHOWN_STEP) {
-    renderPack(commentsRenderingInfo.array.slice(commentsRenderingInfo.counterShownBegin, commentsRenderingInfo.maxComments), getCommentElement, commentsContainer);
+    renderPack(commentsRenderingInfo.comments.slice(commentsRenderingInfo.counterShownBegin, commentsRenderingInfo.maxComments), getCommentElement, commentsContainer);
     commentsLoader.classList.add('hidden');
     fullPostShownComments.textContent = commentsRenderingInfo.maxComments;
     commentsLoader.classList.add('hidden');
     removeCommentsLoaderClick();
     return;
   }
-  renderPack(commentsRenderingInfo.array.slice(commentsRenderingInfo.counterShownBegin, commentsRenderingInfo.counterShownEnd), getCommentElement, commentsContainer);
+  renderPack(commentsRenderingInfo.comments.slice(commentsRenderingInfo.counterShownBegin, commentsRenderingInfo.counterShownEnd), getCommentElement, commentsContainer);
   fullPostShownComments.textContent = commentsRenderingInfo.counterShownEnd.toString();
   addCommentsLoaderClick();
   commentsRenderingInfo.counterShownBegin += commentsRenderingInfo.SHOWN_STEP;
   commentsRenderingInfo.counterShownEnd += commentsRenderingInfo.SHOWN_STEP;
   commentsRenderingInfo.flag += 1;
-}
+};
 
-const onCommentsLoaderClick = () => renderComments(commentsRenderingInfo.array);
+const onCommentsLoaderClick = () => renderComments(commentsRenderingInfo.comments);
 
 function addCommentsLoaderClick () {
   commentsLoader.addEventListener('click', onCommentsLoaderClick);
@@ -127,11 +105,33 @@ function removeCommentsLoaderClick () {
   commentsLoader.removeEventListener('click', onCommentsLoaderClick);
 }
 
-function changePhotoData (element, data) {
+const changePhotoData = (element, data) => {
   const id = element.id;
-  const array = data[id].comments;
-  renderComments(array);
+  const comments = data[id].comments;
+  renderComments(comments);
   renderFullPhoto(data[id]);
+};
+
+function onFullPostClick () {
+  closePost();
+  clearPack(commentsContainer);
+  filterSort.addEventListener('mouseup', addActiveClass);
+  document.removeEventListener('keydown', onDocumentKeydown);
+  postList.addEventListener('click', onSmallPostClick);
+  removeCommentsLoaderClick();
+  closeFullPost.removeEventListener('click', onFullPostClick);
+}
+
+function onSmallPostClick (evt) {
+  if (evt.target.closest('.picture')) {
+    openPost();
+    commentsLoader.classList.remove('hidden');
+    changePhotoData(evt.target.closest('.picture'), picturesData);
+    filterSort.removeEventListener('mouseup', addActiveClass);
+    document.addEventListener('keydown', onDocumentKeydown);
+    postList.removeEventListener('click', onSmallPostClick);
+    closeFullPost.addEventListener('click', onFullPostClick);
+  }
 }
 
 export {postList, onSmallPostClick};

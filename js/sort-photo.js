@@ -1,8 +1,9 @@
 import {picturesData, pictureList, getPictureElement} from './create-picture-list.js';
 import {getRandomArrayElement, renderPack, debounce} from './utils.js';
 
-const filterSort = document.querySelector('.img-filters');
 const RERENDER_DELAY = 500;
+
+const filterSort = document.querySelector('.img-filters');
 
 const pictureListClear = () => {
   pictureList.querySelectorAll('.picture').forEach((item) => {
@@ -54,9 +55,9 @@ const onFilterSortClick = (evt) => {
   }
 };
 
-function addFilterEventListeners() {
+const addFilterEventListeners = () => {
   filterSort.addEventListener('click', debounce(onFilterSortClick, RERENDER_DELAY));
   filterSort.addEventListener('mouseup', addActiveClass);
-}
+};
 
 export {filterSort, addActiveClass, addFilterEventListeners};

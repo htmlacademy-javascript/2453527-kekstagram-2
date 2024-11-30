@@ -19,6 +19,7 @@ const SubmitButtonText = {
 
 const MAX_DESCRIPTION_LENGTH = 140;
 const MAX_HASHTAGS_LENGTH = 5;
+const HASHTAG = /^#[a-zа-яё0-9]{1,19}$/i;
 
 const editForm = document.querySelector('.img-upload__form');
 const addNewPhotoInput = editForm.querySelector('#upload-file');
@@ -27,7 +28,6 @@ const buttonCloseForm = editForm.querySelector('.img-upload__cancel');
 const submitButton = editForm.querySelector('.img-upload__submit');
 const hashtagsInput = editForm.querySelector('.text__hashtags');
 const descriptionInput = editForm.querySelector('.text__description');
-const hashtag = /^#[a-zа-яё0-9]{1,19}$/i;
 
 // Валидация формы
 
@@ -37,13 +37,13 @@ const pristine = new Pristine(editForm, {
   errorTextParent: 'img-upload__field-wrapper',
 });
 
-function validateHashtag (value) {
+const validateHashtag = (value) => {
   const valueArr = value.trim().toLowerCase().split(' ').filter((item) => item !== '');
   if (valueArr.length > MAX_HASHTAGS_LENGTH) {
     return false;
   }
   for (let i = 0; i < valueArr.length; i++) {
-    if (!hashtag.test(valueArr[i]) && value.length !== 0) {
+    if (!HASHTAG.test(valueArr[i]) && value.length !== 0) {
       return false;
     }
     for (let k = i + 1; k < valueArr.length; k++) {
@@ -53,15 +53,15 @@ function validateHashtag (value) {
     }
   }
   return true;
-}
+};
 
-function getHashtagErrorMessage (value) {
+const getHashtagErrorMessage = (value) => {
   const valueArr = value.trim().toLowerCase().split(' ');
   if (valueArr.length > MAX_HASHTAGS_LENGTH) {
     return 'Превышено количество хэштегов';
   }
   for (let i = 0; i < valueArr.length; i++) {
-    if (!hashtag.test(valueArr[i]) && value.length !== 0) {
+    if (!HASHTAG.test(valueArr[i]) && value.length !== 0) {
       return 'Введён невалидный хэштег';
     }
     for (let k = i + 1; k < valueArr.length; k++) {
@@ -71,21 +71,19 @@ function getHashtagErrorMessage (value) {
     }
   }
   return true;
-}
+};
 
-function validateDescription (value) {
-  return !(value.length > MAX_DESCRIPTION_LENGTH);
-}
+const validateDescription = (value) => !(value.length > MAX_DESCRIPTION_LENGTH);
 
-function removeValidatorContainer () {
-  const pristineContainer = editForm.querySelectorAll('.pristine-error');
-  if (!pristineContainer) {
+const removeValidatorContainer = () => {
+  const pristineElements = editForm.querySelectorAll('.pristine-error');
+  if (!pristineElements) {
     return;
   }
-  pristineContainer.forEach((item) => {
+  pristineElements.forEach((item) => {
     item.remove();
   });
-}
+};
 
 pristine.addValidator(hashtagsInput, validateHashtag, getHashtagErrorMessage);
 pristine.addValidator(descriptionInput, validateDescription, 'Длина комментария больше 140 символов');
@@ -102,7 +100,7 @@ const unBlockSubmitButton = () => {
   submitButton.textContent = SubmitButtonText.IDLE;
 };
 
-function sendEditForm (formElement) {
+const sendEditForm = (formElement) => {
   const isValid = pristine.validate();
   if (isValid) {
     blockSubmitButton();
@@ -117,12 +115,12 @@ function sendEditForm (formElement) {
       })
       .finally(unBlockSubmitButton);
   }
-}
+};
 
-function onEditFormSubmit (evt) {
+const onEditFormSubmit = (evt) => {
   evt.preventDefault();
   sendEditForm(evt.target);
-}
+};
 
 // Реализация открытия/закрытия, добавление/удаление обработчиков
 const onDocumentKeydown = (evt) => {
@@ -137,14 +135,14 @@ const onDocumentKeydown = (evt) => {
   }
 };
 
-function onInputChange () {
+const onInputChange = () => {
   openEditForm();
   getUserPhoto();
-}
+};
 
-function onCloseButtonClick () {
+const onCloseButtonClick = () => {
   closeEditForm();
-}
+};
 
 function openEditForm () {
   editFormModal.classList.remove('hidden');
