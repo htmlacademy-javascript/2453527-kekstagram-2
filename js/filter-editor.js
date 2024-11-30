@@ -53,7 +53,7 @@ noUiSlider.create(sliderElement, {
   connect: 'lower',
 });
 
-function addSliderEvent () {
+const addSliderEvent = () => {
   sliderElement.noUiSlider.on('update', () => {
     if (!filterObject) {
       return;
@@ -61,13 +61,35 @@ function addSliderEvent () {
     effectLevelInput.value = Math.round(sliderElement.noUiSlider.get() * 10) * 0.1;
     editedPicture.style.filter = `${filterObject.filter}(${effectLevelInput.value}${filterObject.metrics})`;
   });
-}
+};
 
-function removeSliderEvent () {
+const removeSliderEvent = () => {
   sliderElement.noUiSlider.off('update');
-}
+};
 
-function onFilterClick (evt) {
+const updateFilter = (object) => {
+  sliderElement.noUiSlider.updateOptions({
+    range: {
+      min: object.min,
+      max: object.max,
+    },
+    start: object.max,
+    step: object.step,
+  });
+};
+
+const resetFilters = () => {
+  editedPicture.style.filter = null;
+  sliderContainer.classList.add('hidden');
+};
+
+const resetPictureStyles = () => {
+  editedPicture.removeAttribute('style');
+  filterObject = '';
+  sliderContainer.classList.add('hidden');
+};
+
+const onFilterClick = (evt) => {
   const filterInput = evt.target.closest('.effects__radio');
   const name = filterInput.value;
   if (name === 'none') {
@@ -77,28 +99,6 @@ function onFilterClick (evt) {
   filterObject = filters[name];
   sliderContainer.classList.remove('hidden');
   updateFilter(filterObject);
-}
-
-function updateFilter (object) {
-  sliderElement.noUiSlider.updateOptions({
-    range: {
-      min: object.min,
-      max: object.max,
-    },
-    start: object.max,
-    step: object.step,
-  });
-}
-
-function resetFilters () {
-  editedPicture.style.filter = null;
-  sliderContainer.classList.add('hidden');
-}
-
-function resetPictureStyles () {
-  editedPicture.removeAttribute('style');
-  filterObject = '';
-  sliderContainer.classList.add('hidden');
-}
+};
 
 export {effectsList, onFilterClick, resetPictureStyles, addSliderEvent, removeSliderEvent};
